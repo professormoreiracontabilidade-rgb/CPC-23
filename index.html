@@ -1,28 +1,100 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#dff3ff">
 <title>CPC 23 — Professor Moreira</title>
 <style>
-*{box-sizing:border-box}html,body{margin:0;min-height:100%;background:#dff3ff;font-family:Arial,sans-serif;color:#063b68}body{min-height:100svh;display:flex;justify-content:center;align-items:center;overflow:hidden}.app{width:min(100%,560px);height:100svh;display:flex;flex-direction:column;padding:8px 10px max(8px,env(safe-area-inset-bottom));gap:7px}.top{display:flex;align-items:center;justify-content:space-between;gap:8px;min-height:38px}.title{font-weight:800;font-size:clamp(15px,4vw,20px);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.counter{background:#07599b;color:#fff;border-radius:999px;padding:7px 12px;font-weight:800;white-space:nowrap}.stage{flex:1;min-height:0;display:flex;align-items:center;justify-content:center;position:relative;touch-action:pan-y}.stage img{display:block;max-width:100%;max-height:100%;width:auto;height:auto;object-fit:contain;border-radius:12px;box-shadow:0 5px 18px #0003;background:#fff;user-select:none;-webkit-user-drag:none}.controls{display:grid;grid-template-columns:1fr 1.35fr 1fr;gap:8px;min-height:48px}button{border:0;border-radius:12px;background:#07599b;color:#fff;font-weight:800;font-size:22px;cursor:pointer;min-height:46px}button:active{transform:scale(.98)}button:disabled{opacity:.35;cursor:default}.reset{background:#c62828;font-size:16px}@media (max-height:600px){.top{min-height:32px}.controls{min-height:42px}button{min-height:40px}.app{padding-top:5px}}
+*{box-sizing:border-box}
+html,body{margin:0;width:100%;height:100%;background:#dff3ff;font-family:Arial,sans-serif;color:#063b68;overflow:hidden}
+.app{height:100dvh;max-width:650px;margin:auto;display:grid;grid-template-rows:auto 1fr auto;gap:8px;padding:8px 10px max(10px,env(safe-area-inset-bottom))}
+.top{display:flex;align-items:center;justify-content:space-between;gap:10px;font-weight:800}
+.title{font-size:clamp(17px,4vw,22px)}
+.counter{background:#07599b;color:#fff;border-radius:999px;padding:8px 14px;white-space:nowrap}
+.stage{min-height:0;display:flex;align-items:center;justify-content:center;overflow:hidden}
+#card{display:block;max-width:100%;max-height:100%;width:auto;height:auto;object-fit:contain;border-radius:12px;box-shadow:0 4px 16px #0002;user-select:none;-webkit-user-drag:none}
+.controls{display:grid;grid-template-columns:1fr 1.35fr 1fr;gap:8px}
+button{border:0;border-radius:13px;padding:13px 8px;font-size:18px;font-weight:700;color:#fff;background:#0b67aa;cursor:pointer}
+button:disabled{opacity:.4;cursor:default}
+#reset{background:#d62828}
 </style>
 </head>
 <body>
-<main class="app" aria-label="Carrossel CPC 23">
-  <header class="top"><div class="title">CPC 23 — Professor Moreira</div><div id="counter" class="counter">1 / 12</div></header>
+<main class="app">
+  <header class="top">
+    <div class="title">CPC 23 — Professor Moreira</div>
+    <div id="counter" class="counter">1 / 12</div>
+  </header>
+
   <section id="stage" class="stage">
-    <img id="card" src="imagens/01.webp" alt="CPC 23 — imagem 1 de 12" draggable="false" fetchpriority="high">
+    <img id="card" src="01.webp" alt="CPC 23 — imagem 1 de 12" draggable="false">
   </section>
+
   <nav class="controls" aria-label="Navegação">
     <button id="prev" type="button" aria-label="Imagem anterior">←</button>
-    <button id="reset" class="reset" type="button">↻ Reiniciar</button>
+    <button id="reset" type="button">↻ Reiniciar</button>
     <button id="next" type="button" aria-label="Próxima imagem">→</button>
   </nav>
 </main>
+
 <script>
-(()=>{const total=12;let current=1;const img=document.getElementById('card'),counter=document.getElementById('counter'),prev=document.getElementById('prev'),next=document.getElementById('next'),reset=document.getElementById('reset'),stage=document.getElementById('stage');const path=n=>`imagens/${String(n).padStart(2,'0')}.webp`;function preload(n){if(n<1||n>total)return;const p=new Image();p.src=path(n)}function render(){img.src=path(current);img.alt=`CPC 23 — imagem ${current} de ${total}`;counter.textContent=`${current} / ${total}`;prev.disabled=current===1;next.disabled=current===total;preload(current+1);preload(current-1)}function go(d){const n=current+d;if(n<1||n>total)return;current=n;render()}prev.onclick=()=>go(-1);next.onclick=()=>go(1);reset.onclick=()=>{current=1;render()};document.addEventListener('keydown',e=>{if(e.key==='ArrowLeft')go(-1);if(e.key==='ArrowRight')go(1);if(e.key==='Home'){current=1;render()}});let sx=0,sy=0;stage.addEventListener('touchstart',e=>{const t=e.changedTouches[0];sx=t.clientX;sy=t.clientY},{passive:true});stage.addEventListener('touchend',e=>{const t=e.changedTouches[0],dx=t.clientX-sx,dy=t.clientY-sy;if(Math.abs(dx)>55&&Math.abs(dx)>Math.abs(dy)*1.2)go(dx<0?1:-1)},{passive:true});render()})();
+(() => {
+  const total = 12;
+  let current = 1;
+  const card = document.getElementById("card");
+  const counter = document.getElementById("counter");
+  const prev = document.getElementById("prev");
+  const next = document.getElementById("next");
+  const reset = document.getElementById("reset");
+  const stage = document.getElementById("stage");
+
+  const path = n => `${String(n).padStart(2,"0")}.webp`;
+
+  function preload(n){
+    if(n >= 1 && n <= total){
+      const img = new Image();
+      img.src = path(n);
+    }
+  }
+
+  function show(n){
+    current = Math.max(1, Math.min(total, n));
+    card.src = path(current);
+    card.alt = `CPC 23 — imagem ${current} de ${total}`;
+    counter.textContent = `${current} / ${total}`;
+    prev.disabled = current === 1;
+    next.disabled = current === total;
+    preload(current + 1);
+    preload(current - 1);
+  }
+
+  prev.addEventListener("click", () => show(current - 1));
+  next.addEventListener("click", () => show(current + 1));
+  reset.addEventListener("click", () => show(1));
+
+  document.addEventListener("keydown", e => {
+    if(e.key === "ArrowLeft") show(current - 1);
+    if(e.key === "ArrowRight") show(current + 1);
+    if(e.key === "Home") show(1);
+  });
+
+  let startX = 0, startY = 0;
+  stage.addEventListener("touchstart", e => {
+    startX = e.changedTouches[0].clientX;
+    startY = e.changedTouches[0].clientY;
+  }, {passive:true});
+
+  stage.addEventListener("touchend", e => {
+    const dx = e.changedTouches[0].clientX - startX;
+    const dy = e.changedTouches[0].clientY - startY;
+    if(Math.abs(dx) > 45 && Math.abs(dx) > Math.abs(dy)){
+      dx < 0 ? show(current + 1) : show(current - 1);
+    }
+  }, {passive:true});
+
+  show(1);
+})();
 </script>
 </body>
 </html>
